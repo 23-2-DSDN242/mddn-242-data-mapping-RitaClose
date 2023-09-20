@@ -3,9 +3,9 @@ let maskImg=null;
 let renderCounter=0;
 
 // change these three lines as appropiate
-let sourceFile = "input_1.jpg";
-let maskFile   = "mask_1.png";
-let outputFile = "output_1.png";
+let sourceFile = "input_5.png";
+let maskFile   = "mask_5.png";
+let outputFile = "output_5.png";
 
 function preload() {
   sourceImg = loadImage(sourceFile);
@@ -34,21 +34,30 @@ function draw () {
     noStroke();
     if(mask[0] > 128) { // white part of mask
       let pointSize = 10;
-      // stroke(pix[0], 0, 0);
+      stroke(pix[0], pix[1], 0);
+      strokeWeight(pointSize / 1.5);
+      line(x  - pointSize - 10, y, x + pointSize + 10, y); 
       stroke(pix);
       strokeWeight(pointSize / 5);
-      line(x - pointSize, y - pointSize, x + pointSize, y + pointSize);   
       line(x - pointSize, y + pointSize, x + pointSize, y - pointSize);
+      line(x - pointSize, y - pointSize, x + pointSize, y + pointSize);   
+      line(x - pointSize, y, x + pointSize, y);
     }
     else { // black part of mask
       let pointSize = 15;
       fill(pix);
-      stroke(pix[0], 20, 255, 100);
-      strokeWeight(pointSize / 5);   
-      line(x, y - pointSize - 10, x, y + pointSize + 10); 
+      if (i % 2 == 1) {
+        triangle(x, y, x + 22, y - 44, x - 22, y - 44);
+      } else {
+        triangle(x, y, x + 20, y + 40, x - 20, y + 40);
+      }
       stroke(pix);
+      strokeWeight(pointSize / 2);   
+      line(x, y - pointSize - 10, x, y + pointSize + 10); 
+      stroke(30, pix[1], pix[2]);
+      let ran = random(0, 10);
+      strokeWeight(ran);
       line(x, y - pointSize, x, y + pointSize); 
-      // line(x - pointSize, y, x + pointSize, y);
     }
   }
   renderCounter = renderCounter + 1;
