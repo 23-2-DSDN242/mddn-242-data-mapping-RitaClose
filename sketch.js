@@ -2,11 +2,12 @@
 let sourceImg = null;
 let maskImg = null;
 let renderCounter = 0;
+let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_1.jpg";
-let maskFile   = "mask_1.png";
-let outputFile = "output_1.png";
+let sourceFile = "input_5.jpg";
+let maskFile   = "mask_5.png";
+let outputFile = "output_5.png";
 
 function preload() {
   sourceImg = loadImage(sourceFile);
@@ -19,59 +20,101 @@ function setup () {
 
   imageMode(CENTER);
   noStroke();
-  background(180);
+  background(0, 0, 128);
   sourceImg.loadPixels();
   maskImg.loadPixels();
 }
 
 function draw () {
-  let j = renderCounter;
   let colArrR = [];
   let colArrG = [];
   let colArrB = [];
 
-  // get one scanline
-  for(let i = 0; i < 1920; i ++) {
-    let pix = sourceImg.get(i, j);
-    let mask = maskImg.get(i, j);
+  print("active")
 
-    // colorMode(HSB);
+  if (curLayer == 0) {
+    let num_lines_to_draw = 40;
+    // get one scanline
+    for(let j = renderCounter; j < renderCounter + num_lines_to_draw && j < 1080; j ++) {
+      for(let i = 0; i < 1920; i ++) {
+        colorMode(RGB);
+        let pix = sourceImg.get(i, j);
+        // create a color from the values (always RGB)
+        let col = color(pix);
+        let mask = maskImg.get(i, j);
 
-    colArrR.push(pix[0]);
-    colArrG.push(pix[1]);
-    colArrB.push(pix[2]);
+        colArrR.push(pix[0]);
+        colArrG.push(pix[1]);
+        colArrB.push(pix[2]);
 
+        if(mask[0] > 128) {
+          // draw the full pixels
+          // let gray_color = 64 + pix[1] / 8;
+          let colAverageR = colArrR.reduce((a, b) => a + b, 0) / colArrR.length;
+          let colAverageG = colArrG.reduce((a, b) => a + b, 0) / colArrG.length;
+          let colAverageB = colArrB.reduce((a, b) => a + b, 0) / colArrB.length;
+    
+          var colAverage = color(colAverageR, colAverageG, colAverageB);
+          // set(random(i + 10, i - 10), random(j + 5, j - 5), colAverage);
+          set(i, j, colAverage);
+        } else {
+          // colorMode(HSB, 360, 100, 100);
+          // // draw a "dimmed" version in gray
+          // let h = hue(col);
+          // let s = saturation(col);
+          // let b = brightness(col);
+  
+          // let new_brt = map(b, 0, 100, 30, 50);
+          // let new_col = color(h, 0, new_brt);
+          // set(i, j, new_col);
+          set(i, j, pix);
+        }
+      }
+    }
+    renderCounter = renderCounter + num_lines_to_draw;
+    updatePixels();
+  
+  } else {
+    rectMode(CORNERS);
+    colArrR = [];
+    colArrG = [];
+    colArrB = [];
 
-    if(mask[0] > 128) {
-      // draw the full pixels
-      // let col = color(pix);
-      // colorMode(HSB, 360, 100, 100);
-      // let h = hue(col);
-      // let s = saturation(col);
-      // let b = brightness(col);
+    for(let i = 0; i < 100; i ++) {
+      let x1 = random(0, width);
+      let y1 = random(0, height);
+      let x2 = x1 + 5;
+      let y2 = y1 + 5;
 
-      // newH = map(h, 0, 360, 80, 120);
-      // let newColor = color(newH, s, b);
-      // let gray_color = 64 + pix[1] / 8;
+      let pix = sourceImg.get(x1, y1);
+      let mask = maskImg.get(x1, y1);
+
+      colArrR.push(pix[0]);
+      colArrG.push(pix[1]);
+      colArrB.push(pix[2]);
+      
+      fill(pix);
       let colAverageR = colArrR.reduce((a, b) => a + b, 0) / colArrR.length;
       let colAverageG = colArrG.reduce((a, b) => a + b, 0) / colArrG.length;
       let colAverageB = colArrB.reduce((a, b) => a + b, 0) / colArrB.length;
-
+    
       let colAverage = color(colAverageR, colAverageG, colAverageB);
-      // set(random(i + 10, i - 10), random(j + 5, j - 5), colAverage);
-      set(i, j, colAverage);
-    }
-    else {
-      // draw a "dimmed" version in gray
-      colorMode(RGB);
 
-      set(i, j, pix);
+      if (mask[1] < 128) {
+        // rect(x1, y1, 5, 5);
+      } else {
+        fill(colAverage);
+        rect(x1, y1, x2, y2, 1);
+      }
     }
+
+    renderCounter = renderCounter + 1;
   }
-  updatePixels();
-  renderCounter = renderCounter + 1;
-  print(renderCounter);
-  if(renderCounter > 1080) {
+  // print(renderCounter);
+  if (curLayer == 0 && renderCounter > 1080) {
+    curLayer = 1;
+    renderCounter = 0;
+  } else if (curLayer == 1 && renderCounter > 500) {
     console.log("Done!")
     noLoop();
     // uncomment this to save the result
@@ -163,7 +206,7 @@ function keyTyped() {
 //     console.log("Done!")
 //     noLoop();
 //     // uncomment this to save the result
-//     saveArtworkImage(outputFile);
+//     // saveArtworkImage(outputFile);
 //   }
 // }
 
