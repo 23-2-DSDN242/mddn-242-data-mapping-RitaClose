@@ -5,9 +5,9 @@ let renderCounter = 0;
 let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_4.jpg";
-let maskFile   = "mask_4.png";
-let outputFile = "output_4.png";
+let sourceFile = "input_1.jpg";
+let maskFile   = "mask_1.png";
+let outputFile = "output_1.png";
 
 var finalRowColorR = [];
 var finalRowColorG = [];
@@ -66,15 +66,6 @@ function draw () {
           set(i, j, colAverage);
 
         } else {
-          // colorMode(HSB, 360, 100, 100);
-          // // draw a "dimmed" version in gray
-          // let h = hue(col);
-          // let s = saturation(col);
-          // let b = brightness(col);
-  
-          // let new_brt = map(b, 0, 100, 30, 50);
-          // let new_col = color(h, 0, new_brt);
-          // set(i, j, new_col);
           set(i, j, pix);
         }
       }
@@ -106,8 +97,12 @@ function draw () {
       let x2 = x1 + 5;
       let y2 = y1 + 5;
 
+      // colorMode(HSB, 360);
+
       let pix = sourceImg.get(x1, y1);
       let mask = maskImg.get(x1, y1);
+
+      let colHSB = color(pix);
 
       // colArrR.push(pix[0]);
       // colArrG.push(pix[1]);
@@ -125,11 +120,25 @@ function draw () {
       // print(finalColAverage);
       let roundY1 = Math.round(y1);
       var finalColAverage = color(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1]);
-      print(roundY1);
-      print(finalRowColorR.length);
+      // print(roundY1);
+      // print(finalRowColorR.length);
 
       if (mask[1] < 128) {
+
+        // let h = hue(colHSB);
+        // let s = saturation(colHSB);
+        // let b = brightness(colHSB);
+
+        // let new_brt = map(b, 0, 360, 85, 360);
+        // let new_sat = map(s, 0, 360, 60, 360);
+        // let new_col = color(h, new_sat, new_brt);
+
+        // noStroke();
+        // fill(new_col);
+        // rect(x1, y1, x2, y2, 2);
+
         if (i < 9) {
+          colorMode(RGB);
           noStroke();
           fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
           circle(x1 + random(-20, 20), y1 + random(-20, 20), random(100, 200));
@@ -138,24 +147,28 @@ function draw () {
           //   fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 200);
           //   triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
           // }
+          
         }
       } else {
         // fill();
-        stroke(finalColAverage);
+        colorMode(RGB);
+        // stroke(finalColAverage);
+        stroke(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 15);
         // stroke(255);
         strokeWeight(3);
         let yRan = y1 + random(-20, 20);
         let xRan = x1 + random(-20, 20);
-        line(x1, yRan, xRan, yRan);
-        line(xRan, y1, xRan, yRan);
+        line(x1, yRan, x1 + 10, yRan);
+        line(xRan, y1, xRan, y1 + 10);
         // noStroke();
         // fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
         // triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
-        if (i % 2 == 1) {
+        if (i %2 == 1) {
           noStroke();
           fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
-          circle(x1 + random(-20, 20), y1 + random(-20, 20), random(50, 150));
-          // rect(x1, y1, x2, y2, 1);
+          // blendMode(LIGHTEST);
+          circle(x1 + random(-30, 30), y1 + random(-30, 30), random(20, 130));
+          // blendMode(BLEND);
         }
       }
     }
