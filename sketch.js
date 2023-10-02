@@ -5,9 +5,13 @@ let renderCounter = 0;
 let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_5.jpg";
-let maskFile   = "mask_5.png";
-let outputFile = "output_5.png";
+let sourceFile = "input_4.jpg";
+let maskFile   = "mask_4.png";
+let outputFile = "output_4.png";
+
+var finalRowColorR = [];
+var finalRowColorG = [];
+var finalRowColorB = [];
 
 function preload() {
   sourceImg = loadImage(sourceFile);
@@ -23,6 +27,7 @@ function setup () {
   background(0, 0, 128);
   sourceImg.loadPixels();
   maskImg.loadPixels();
+  
 }
 
 function draw () {
@@ -30,33 +35,36 @@ function draw () {
   let colArrG = [];
   let colArrB = [];
 
-  print("active")
-
   if (curLayer == 0) {
-    let num_lines_to_draw = 40;
+    let num_lines_to_draw = 1;
     // get one scanline
     for(let j = renderCounter; j < renderCounter + num_lines_to_draw && j < 1080; j ++) {
       for(let i = 0; i < 1920; i ++) {
         colorMode(RGB);
         let pix = sourceImg.get(i, j);
         // create a color from the values (always RGB)
-        let col = color(pix);
+        // let col = color(pix);
         let mask = maskImg.get(i, j);
 
         colArrR.push(pix[0]);
         colArrG.push(pix[1]);
         colArrB.push(pix[2]);
 
+        var colAverageR = Math.round(colArrR.reduce((a, b) => a + b, 0) / colArrR.length);
+        var colAverageG = Math.round(colArrG.reduce((a, b) => a + b, 0) / colArrG.length);
+        var colAverageB = Math.round(colArrB.reduce((a, b) => a + b, 0) / colArrB.length);
+  
+        var colAverage = color(colAverageR, colAverageG, colAverageB);
+
         if(mask[0] > 128) {
           // draw the full pixels
           // let gray_color = 64 + pix[1] / 8;
-          let colAverageR = colArrR.reduce((a, b) => a + b, 0) / colArrR.length;
-          let colAverageG = colArrG.reduce((a, b) => a + b, 0) / colArrG.length;
-          let colAverageB = colArrB.reduce((a, b) => a + b, 0) / colArrB.length;
-    
-          var colAverage = color(colAverageR, colAverageG, colAverageB);
+
+          // var rgbAverage = [colAverageR, colAverageG, colAverageB];
+
           // set(random(i + 10, i - 10), random(j + 5, j - 5), colAverage);
           set(i, j, colAverage);
+
         } else {
           // colorMode(HSB, 360, 100, 100);
           // // draw a "dimmed" version in gray
@@ -70,17 +78,29 @@ function draw () {
           set(i, j, pix);
         }
       }
+      //In J Loop
+      // finalRowColorR.push(colAverageR);
+      // finalRowColorG.push(colAverageG);
+      // finalRowColorB.push(colAverageB);
+      finalRowColorR[j] = colAverageR;
+      finalRowColorG[j] = colAverageG;
+      finalRowColorB[j] = colAverageB;
+
+      // print(colAverageR);
+      // print(finalRowColorR.length);
     }
     renderCounter = renderCounter + num_lines_to_draw;
     updatePixels();
   
-  } else {
-    rectMode(CORNERS);
-    colArrR = [];
-    colArrG = [];
-    colArrB = [];
+  } 
 
-    for(let i = 0; i < 100; i ++) {
+  if (curLayer == 1) {
+    rectMode(CORNERS);
+    // colArrR = [];
+    // colArrG = [];
+    // colArrB = [];
+
+    for(let i = 0; i < 500; i ++) {
       let x1 = random(0, width);
       let y1 = random(0, height);
       let x2 = x1 + 5;
@@ -89,22 +109,54 @@ function draw () {
       let pix = sourceImg.get(x1, y1);
       let mask = maskImg.get(x1, y1);
 
-      colArrR.push(pix[0]);
-      colArrG.push(pix[1]);
-      colArrB.push(pix[2]);
+      // colArrR.push(pix[0]);
+      // colArrG.push(pix[1]);
+      // colArrB.push(pix[2]);
       
-      fill(pix);
-      let colAverageR = colArrR.reduce((a, b) => a + b, 0) / colArrR.length;
-      let colAverageG = colArrG.reduce((a, b) => a + b, 0) / colArrG.length;
-      let colAverageB = colArrB.reduce((a, b) => a + b, 0) / colArrB.length;
+      // fill(pix);
+      // let colAverageR = colArrR.reduce((a, b) => a + b, 0) / colArrR.length;
+      // let colAverageG = colArrG.reduce((a, b) => a + b, 0) / colArrG.length;
+      // let colAverageB = colArrB.reduce((a, b) => a + b, 0) / colArrB.length;
     
-      let colAverage = color(colAverageR, colAverageG, colAverageB);
+      // let colAverage = color(colAverageR, colAverageG, colAverageB);
+
+
+      // let finalColAverage = color(finalRowColor[y1[0]], finalRowColor[y1[1]], finalRowColor[y1[2]]);
+      // print(finalColAverage);
+      let roundY1 = Math.round(y1);
+      var finalColAverage = color(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1]);
+      print(roundY1);
+      print(finalRowColorR.length);
 
       if (mask[1] < 128) {
-        // rect(x1, y1, 5, 5);
+        if (i < 9) {
+          noStroke();
+          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
+          circle(x1 + random(-20, 20), y1 + random(-20, 20), random(100, 200));
+          // if (i == 1 && renderCounter < 50) {
+          //   // stroke(255, 100);
+          //   fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 200);
+          //   triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
+          // }
+        }
       } else {
-        fill(colAverage);
-        rect(x1, y1, x2, y2, 1);
+        // fill();
+        stroke(finalColAverage);
+        // stroke(255);
+        strokeWeight(3);
+        let yRan = y1 + random(-20, 20);
+        let xRan = x1 + random(-20, 20);
+        line(x1, yRan, xRan, yRan);
+        line(xRan, y1, xRan, yRan);
+        // noStroke();
+        // fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
+        // triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
+        if (i % 2 == 1) {
+          noStroke();
+          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
+          circle(x1 + random(-20, 20), y1 + random(-20, 20), random(50, 150));
+          // rect(x1, y1, x2, y2, 1);
+        }
       }
     }
 
