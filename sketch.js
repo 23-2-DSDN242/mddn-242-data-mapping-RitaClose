@@ -5,9 +5,9 @@ let renderCounter = 0;
 let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_1.jpg";
-let maskFile   = "mask_1.png";
-let outputFile = "output_1.png";
+let sourceFile = "input_5.jpg";
+let maskFile   = "mask_5.png";
+let outputFile = "output_5.png";
 
 var finalRowColorR = [];
 var finalRowColorG = [];
@@ -46,6 +46,10 @@ function draw () {
         // let col = color(pix);
         let mask = maskImg.get(i, j);
 
+        // let newR = pix[0] + 5;
+        // let newG = pix[1] + 15;
+        // let newB = pix[2] + 5;
+
         colArrR.push(pix[0]);
         colArrG.push(pix[1]);
         colArrB.push(pix[2]);
@@ -70,9 +74,6 @@ function draw () {
         }
       }
       //In J Loop
-      // finalRowColorR.push(colAverageR);
-      // finalRowColorG.push(colAverageG);
-      // finalRowColorB.push(colAverageB);
       finalRowColorR[j] = colAverageR;
       finalRowColorG[j] = colAverageG;
       finalRowColorB[j] = colAverageB;
@@ -137,23 +138,33 @@ function draw () {
         // fill(new_col);
         // rect(x1, y1, x2, y2, 2);
 
-        if (i < 9) {
+        if (i < 7) {
           colorMode(RGB);
           noStroke();
           fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
+          strokeWeight(0.25);
+          stroke(10, 1);
           circle(x1 + random(-20, 20), y1 + random(-20, 20), random(100, 200));
           // if (i == 1 && renderCounter < 50) {
           //   // stroke(255, 100);
           //   fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 200);
           //   triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
           // }
-          
+
+          // noFill();
+          // strokeWeight(1);
+          // stroke(255, 5);
+          // line(x1 - 30, y1 - 2, x1 + 30, y1 - 2);
+
+          strokeWeight(3);
+          stroke(finalRowColorR[roundY1] + 20, finalRowColorG[roundY1] + 20, finalRowColorB[roundY1] - 70, 20);
+          line(x1 - 30, y1, x1 + 30, y1);
         }
       } else {
         // fill();
         colorMode(RGB);
         // stroke(finalColAverage);
-        stroke(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 15);
+        stroke(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 25);
         // stroke(255);
         strokeWeight(3);
         let yRan = y1 + random(-20, 20);
@@ -165,26 +176,56 @@ function draw () {
         // triangle(x1, y1, x1 + 22, y1 - 44, x1 - 22, y1 - 44);
         if (i %2 == 1) {
           noStroke();
-          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
-          // blendMode(LIGHTEST);
+          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 4);
+          // blendMode(REMOVE);
           circle(x1 + random(-30, 30), y1 + random(-30, 30), random(20, 130));
           // blendMode(BLEND);
         }
+        set(x1, y1, pix);
       }
     }
 
     renderCounter = renderCounter + 1;
   }
+  if (curLayer == 2) {
+    let num_lines_to_draw = 1;
+    // get one scanline
+    for(let j = renderCounter; j < renderCounter + num_lines_to_draw && j < 1080; j ++) {
+      for(let i = 0; i < 1920; i ++) {
+        colorMode(RGB);
+        let pix = sourceImg.get(i, j);
+        // create a color from the values (always RGB)
+        // let col = color(pix);
+        let mask = maskImg.get(i, j);
+
+        if(mask[0] > 128) {
+          fill(pix);
+          circle(i, j, 2);
+        } else {
+        }
+      }
+      print(j);
+    }
+
+    renderCounter = renderCounter + num_lines_to_draw;
+    // updatePixels(); 
+  }
+
   // print(renderCounter);
   if (curLayer == 0 && renderCounter > 1080) {
     curLayer = 1;
     renderCounter = 0;
+    console.log("Layer1Done");
   } else if (curLayer == 1 && renderCounter > 500) {
+    curLayer = 2;
+    renderCounter = 0;
+    console.log("Layer2Done");
+  } else if (curLayer == 2 && renderCounter > 1080) {
     console.log("Done!")
     noLoop();
     // uncomment this to save the result
     // saveArtworkImage(outputFile);
-  }
+}
 }
 
 function keyTyped() {
@@ -192,91 +233,3 @@ function keyTyped() {
     saveBlocksImages();
   }
 }
-
-
-
-
-
-
-// //Original Code Source
-
-// let sourceImg=null;
-// let maskImg=null;
-// let renderCounter=0;
-
-// // change these three lines as appropiate
-// let sourceFile = "input_2.jpg";
-// let maskFile   = "mask_2.png";
-// let outputFile = "output_2.png";
-
-// function preload() {
-//   sourceImg = loadImage(sourceFile);
-//   maskImg = loadImage(maskFile);
-// }
-
-// function setup () {
-//   let main_canvas = createCanvas(1920, 1080);
-//   main_canvas.parent('canvasContainer');
-
-//   imageMode(CENTER);
-//   noStroke();
-//   // background(255, 0, 0);
-//   background(sourceFile);
-//   sourceImg.loadPixels();
-//   maskImg.loadPixels();
-// }
-
-// function draw () {
-//   for(let i = 0; i < 5000; i ++) {
-//     let x = floor(random(sourceImg.width));
-//     let y = floor(random(sourceImg.height));
-//     let pix = sourceImg.get(x, y);
-//     let mask = maskImg.get(x, y);
-//     fill(pix[0], 0, 0);
-//     noStroke();
-//     if(mask[0] > 128) { // white part of mask
-//       let pointSize = 10;
-//       stroke(pix[0], pix[1], 0);
-//       // strokeWeight(pointSize / 1.5);
-//       // line(x  - pointSize - 10, y, x + pointSize + 10, y); 
-//       stroke(pix);
-//       strokeWeight(pointSize / 3);
-//       line(x - pointSize, y + pointSize, x + pointSize, y - pointSize);
-//       stroke(pix[0], 180);
-//       line(x - pointSize, y - pointSize, x + pointSize, y + pointSize);   
-//       // line(x - pointSize, y, x + pointSize, y);
-//     }
-//     else { // black part of mask
-//       let pointSize = 15;
-//       fill(pix, 100);
-//       // if (i % 2 == 1) {
-//         // triangle(x, y, x + 22, y - 44, x - 22, y - 44);
-//       // } else {
-//       //   triangle(x, y, x + 20, y + 40, x - 20, y + 40);
-//       // }
-//       triangle(x, y, x + 10, y + 20, x - 10, y + 20);
-//       fill(pix[0], 255, pix[2], 20);
-//       circle(x, y + 10, 10);
-//       stroke(pix);
-//       strokeWeight(pointSize / 2);   
-//       // line(x, y - pointSize - 10, x, y + pointSize + 10); 
-//       stroke(30, pix[1], pix[2]);
-//       let ran = random(0, 10);
-//       strokeWeight(ran);
-//       // line(x, y - pointSize, x, y + pointSize); 
-//     }
-//   }
-//   renderCounter = renderCounter + 1;
-//   if(renderCounter > 20) {
-//     console.log("Done!")
-//     noLoop();
-//     // uncomment this to save the result
-//     // saveArtworkImage(outputFile);
-//   }
-// }
-
-// function keyTyped() {
-//   if (key == '!') {
-//     saveBlocksImages();
-//   }
-// }
