@@ -5,9 +5,9 @@ let renderCounter = 0;
 let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_5.jpg";
-let maskFile   = "mask_5.png";
-let outputFile = "output_5.png";
+let sourceFile = "input_1.jpg";
+let maskFile   = "mask_1.png";
+let outputFile = "output_1.png";
 
 var finalRowColorR = [];
 var finalRowColorG = [];
@@ -37,18 +37,11 @@ function draw () {
 
   if (curLayer == 0) {
     let num_lines_to_draw = 1;
-    // get one scanline
     for(let j = renderCounter; j < renderCounter + num_lines_to_draw && j < 1080; j ++) {
       for(let i = 0; i < 1920; i ++) {
         colorMode(RGB);
         let pix = sourceImg.get(i, j);
-        // create a color from the values (always RGB)
-        // let col = color(pix);
         let mask = maskImg.get(i, j);
-
-        // let newR = pix[0] + 5;
-        // let newG = pix[1] + 15;
-        // let newB = pix[2] + 5;
 
         colArrR.push(pix[0]);
         colArrG.push(pix[1]);
@@ -61,14 +54,7 @@ function draw () {
         var colAverage = color(colAverageR, colAverageG, colAverageB);
 
         if(mask[0] > 20) {
-          // draw the full pixels
-          // let gray_color = 64 + pix[1] / 8;
-
-          // var rgbAverage = [colAverageR, colAverageG, colAverageB];
-
-          // set(random(i + 1, i - 1), random(j + 1, j - 1), colAverage);
           set(i, j, colAverage);
-
         } else {
           set(i, j, pix);
         }
@@ -77,9 +63,6 @@ function draw () {
       finalRowColorR[j] = colAverageR;
       finalRowColorG[j] = colAverageG;
       finalRowColorB[j] = colAverageB;
-
-      // print(colAverageR);
-      // print(finalRowColorR.length);
     }
     renderCounter = renderCounter + num_lines_to_draw;
     updatePixels();
@@ -88,7 +71,6 @@ function draw () {
 
   if (curLayer == 1) {
     let num_lines_to_draw = 1;
-    // get one scanline
     for(let j = renderCounter; j < renderCounter + num_lines_to_draw && j < 1080; j ++) {
       for(let i = 0; i < 1920; i ++) {
         colorMode(RGB);
@@ -107,22 +89,16 @@ function draw () {
     }
 
     renderCounter = renderCounter + num_lines_to_draw;
-    // updatePixels(); 
   }
 
   if (curLayer == 2) {
     rectMode(CORNERS);
-    // colArrR = [];
-    // colArrG = [];
-    // colArrB = [];
 
     for(let i = 0; i < 500; i ++) {
       let x1 = random(0, width);
       let y1 = random(0, height);
       let x2 = x1 + 5;
       let y2 = y1 + 5;
-
-      // colorMode(HSB, 360);
 
       let pix = sourceImg.get(x1, y1);
       let mask = maskImg.get(x1, y1);
@@ -132,34 +108,19 @@ function draw () {
 
       if (mask[1] < 20) {
 
-        // let h = hue(colHSB);
-        // let s = saturation(colHSB);
-        // let b = brightness(colHSB);
-
-        // let new_brt = map(b, 0, 360, 85, 360);
-        // let new_sat = map(s, 0, 360, 60, 360);
-        // let new_col = color(h, new_sat, new_brt);
-
-        // noStroke();
-        // fill(new_col);
-        // rect(x1, y1, x2, y2, 2);
         noStroke();
-        if (pix[0] < 80 && pix[1] < 110 && pix[2] < 50) {
-          fill(pix);
+        if (pix[0] < 75 && pix[1] < 130 && pix[2] < 50) {
+          fill(pix[0], pix[1], pix[2], 160);
           triangle(x1, y1, x1 + 2, y1 - 4, x1 - 2, y1 - 4);
-        }
-        if (pix[0] < 180 && pix[1] > 50 && pix[2] > 100) {
-          noFill();
-          strokeWeight(0.5);
-          stroke(pix);
-          circle(x1, y1, random(1, 6));
         }
 
         if (i < 7) {
           colorMode(RGB);
           noStroke();
-          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 5);
-          // circle(x1 + random(-20, 20), y1 + random(-20, 20), random(100, 200));
+          if (y1 < 1060) {
+            fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 4);
+            circle(x1 + random(-20, 20), y1 + random(-20, 20), random(100, 200));
+          }
 
           strokeWeight(3);
           stroke(finalRowColorR[roundY1] + 20, finalRowColorG[roundY1] + 20, finalRowColorB[roundY1] - 70, 20);
@@ -177,12 +138,12 @@ function draw () {
 
         if (i %2 == 1 && y1 < 1060) {
           noStroke();
-          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 6);
+          fill(finalRowColorR[roundY1], finalRowColorG[roundY1], finalRowColorB[roundY1], 4);
           // blendMode(REMOVE);
           circle(x1 + random(-100, 100), y1 + random(-30, 30), random(20, 130));
           // blendMode(BLEND);
         }
-        // set(x1, y1, pix);
+        set(x1, y1, pix);
       }
     }
 
