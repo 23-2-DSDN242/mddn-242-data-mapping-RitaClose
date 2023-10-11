@@ -18,16 +18,19 @@ Anyway, from that point the first thing I tried was to take the average colour o
 The problem with this system is that I was creating the average colour by collecting the pixel colours in an array as the image was drawn. This was an issue because the average changed as the row progressed and if the mask was too close to the left of the screen, it was not blended as well as on the right.
 
 To cover up this issue, I first tried using mostly transparent circles with varying blend modes to try and not only disrupt the colours within the mask, but also try to blur the edges between the mask and the rest of the image. This worked somewhat, but I couldn't quite balance out the colours due to the unpredictable nature of the overlapping circles, and the built up transparency they created.
-Eventually I ended up adding a third draw layer in between the original image and the circles on top that would use the pixel colour final averages from the first image, but by jittering their placement would create a more hopefully more organic look.
 ##### Second Pass
 ![SecondPass](output_1_SecondPass.png)
+Eventually I ended up adding a third draw layer in between the original image and the circles on top that would use the pixel colour final averages from the first image, but by jittering their placement would create a more hopefully more organic look.
+
+Finally, I wanted to further help blend the layers together, so in order to achieve this, I decided to make the image look as though it was taken with an old video camera - with grainy, oversaturated, watercolour-like footage, and those horizontal lines that used to permeate the screen. Though this was partly to help with the aesthetic side of the concept, I think the idea of making the images look as though they were taken 15 years ago not only contributes to the literal progression of infrastructure over time, but also artificially conveys the feeling of separation you can only get with time - showing though we can try, the past cannot be reached or recreated.
+##### Final: Third Pass
+![ThirdPass](output_1_ThirdPass.png)
+
 
 ### Experimentation
 In later experiments I tried changing the different colour channels to bring out the landscape colours more, such as adding saturation or using maps to mess around with the amount of green in the photo. Ultimately, I felt that this conflicted too much with the concept of my theme and couldn't get it to look as professional as I'd hoped.
-![Halo Experiment](output_12.png)
+![Halo Experiment](output_5_HaloExample.png)
 In between working to make the mask sections of the image dissapear, I got sidetracked a bit working with different blend modes, and spent a bit of time trying to create a way to better merge the masks and the base image together. I ended up stumbling upon a really cool looking halo effect - especailly when after it was drawn, the original image was put back on top. But unfortunately the point of my concept is to make things go away, not highlight where they are.
 
-### Why This Hill to Die On
+### Inspiration
 The images I have used in this project have been taken by me over the years of both my family farm, and one which my sister works at. This wasn't intended as a slight on them personally or one focussed on farming, they were just the landscape images I had on hand. The true point of it is the lasting impacts of infrastructure on New Zealand landscapes and the enduring legacy of the human race. Not necessarily in a good way. But more than a comment on society, this image filter is rather supposed to provide a glimpse into a more natural New Zealand and a nod to the past before it was touched by civilisation. It's easy to take a landscape photo in New Zealand without infrastructure, people, or manmade objects of course - I did have to sift through a few to actually find some that did contain them - but the point isn't that the need of the filter could be avoided entirely, it's that even if you don't see it at first glance - you still _know_ there's something wrong with the picture, and realise upon further inspection that something has been covered up. Perhaps it is a comment on society after all.
-##### Final Result
-![ThirdPass](output_1_ThirdPass.png)
