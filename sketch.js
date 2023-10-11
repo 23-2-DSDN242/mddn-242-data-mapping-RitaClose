@@ -5,9 +5,9 @@ let renderCounter = 0;
 let curLayer = 0;
 
 // change these three lines as appropiate
-let sourceFile = "input_11.jpg";
-let maskFile   = "mask_11.png";
-let outputFile = "output_11.png";
+let sourceFile = "input_5.jpg";
+let maskFile   = "mask_5.png";
+let outputFile = "output_5.png";
 
 var finalRowColorR = [];
 var finalRowColorG = [];
